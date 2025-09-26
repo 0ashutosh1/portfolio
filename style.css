@@ -617,6 +617,31 @@ body {
   border-color: var(--primary-color);
 }
 
+.project-card.featured {
+  position: relative;
+  border: 2px solid var(--primary-color);
+  box-shadow: var(--shadow-medium);
+}
+
+.project-card.featured::before {
+  content: '✨ Featured Project';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 0 var(--border-radius) 0 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 10;
+}
+
+.project-card.featured:hover {
+  transform: translateY(-15px);
+  box-shadow: var(--shadow-heavy);
+}
+
 .project-image {
   height: 120px;
   background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
