@@ -1,0 +1,25 @@
+{
+  "name": "todomaster-react",
+  "version": "1.0.0",
+  "description": "TodoMaster - Advanced React Todo Application with priority system, filtering, and local storage persistence",
+  "main": "demo.html",
+  "homepage": "https://0ashutosh1.github.io/TODO-APP/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0ashutosh1/TODO-APP.git"
+  },
+  "keywords": [
+    "react",
+    "todo",
+    "task-management",
+    "productivity",
+    "javascript",
+    "responsive-design",
+    "local-storage"
+  ],
+  "author": "Kumar Ashutosh <code.ashutosh08@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

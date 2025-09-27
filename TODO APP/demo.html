@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TodoMaster - React Todo App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✅</text></svg>">
+    
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #48bb78;
+            --danger-color: #f56565;
+            --warning-color: #ed8936;
+            --info-color: #4299e1;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7fafc;
+            --bg-gray: #edf2f7;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --text-light: #a0aec0;
+            --text-white: #ffffff;
+            --border-color: #e2e8f0;
+            --border-radius: 12px;
+            --border-radius-sm: 6px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        #root {
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .app-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .app-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .todo-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+
+        .todo-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .add-todo-form {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .filters-stats {
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .todos-list {
+            padding: 1.5rem;
+            min-height: 300px;
+        }
+
+        .todo-item {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+
+        .todo-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .todo-item.completed {
+            background: var(--bg-gray);
+            opacity: 0.8;
+        }
+
+        .todo-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .todo-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .todo-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 1.1rem;
+        }
+
+        .todo-text.completed {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .priority-medium {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .priority-low {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            min-width: auto;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            #root {
+                padding: 1rem;
+            }
+
+            .app-title {
+                font-size: 2.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .filters-stats {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .todo-content {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .todo-left {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .stats {
+                justify-content: center;
+            }
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 1.5rem;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="loading">
+            <i class="fas fa-spinner fa-spin" style="margin-right: 1rem;"></i>
+            Loading TodoMaster...
+        </div>
+    </div>
+
+    <!-- React via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // TodoMaster App Component
+        function TodoApp() {
+            const [todos, setTodos] = useState([]);
+            const [filter, setFilter] = useState('all');
+            const [newTodo, setNewTodo] = useState('');
+            const [newPriority, setNewPriority] = useState('medium');
+
+            // Load todos from localStorage on component mount
+            useEffect(() => {
+                const savedTodos = localStorage.getItem('todomaster-todos');
+                if (savedTodos) {
+                    setTodos(JSON.parse(savedTodos));
+                }
+            }, []);
+
+            // Save todos to localStorage whenever todos change
+            useEffect(() => {
+                localStorage.setItem('todomaster-todos', JSON.stringify(todos));
+            }, [todos]);
+
+            const addTodo = (e) => {
+                e.preventDefault();
+                if (newTodo.trim()) {
+                    const todo = {
+                        id: Date.now(),
+                        text: newTodo.trim(),
+                        completed: false,
+                        priority: newPriority,
+                        createdAt: new Date().toISOString()
+                    };
+                    setTodos([...todos, todo]);
+                    setNewTodo('');
+                }
+            };
+
+            const toggleTodo = (id) => {
+                setTodos(todos.map(todo =>
+                    todo.id === id ? { ...todo, completed: !todo.completed } : todo
+                ));
+            };
+
+            const deleteTodo = (id) => {
+                setTodos(todos.filter(todo => todo.id !== id));
+            };
+
+            const filteredTodos = todos.filter(todo => {
+                switch (filter) {
+                    case 'active':
+                        return !todo.completed;
+                    case 'completed':
+                        return todo.completed;
+                    case 'high':
+                        return todo.priority === 'high' && !todo.completed;
+                    case 'medium':
+                        return todo.priority === 'medium' && !todo.completed;
+                    case 'low':
+                        return todo.priority === 'low' && !todo.completed;
+                    default:
+                        return true;
+                }
+            });
+
+            const stats = {
+                total: todos.length,
+                completed: todos.filter(t => t.completed).length,
+                active: todos.filter(t => !t.completed).length,
+                high: todos.filter(t => t.priority === 'high' && !t.completed).length
+            };
+
+            return (
+                <div className="app-container">
+                    <div className="app-header">
+                        <h1 className="app-title">
+                            <i className="fas fa-check-double"></i>
+                            TodoMaster
+                        </h1>
+                        <p className="app-subtitle">Advanced React Todo Application</p>
+                        <a href="../Index.html" className="back-button">
+                            <i className="fas fa-arrow-left"></i>
+                            Back to Portfolio
+                        </a>
+                    </div>
+
+                    <div className="todo-container">
+                        <div className="todo-header">
+                            <h2>Manage Your Tasks</h2>
+                            <p>Stay organized and productive</p>
+                        </div>
+
+                        <form className="add-todo-form" onSubmit={addTodo}>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        placeholder="What needs to be done?"
+                                        value={newTodo}
+                                        onChange={(e) => setNewTodo(e.target.value)}
+                                    />
+                                </div>
+                                <div className="form-group" style={{flexBasis: '150px'}}>
+                                    <select
+                                        className="form-select"
+                                        value={newPriority}
+                                        onChange={(e) => setNewPriority(e.target.value)}
+                                    >
+                                        <option value="high">🔴 High</option>
+                                        <option value="medium">🟡 Medium</option>
+                                        <option value="low">🟢 Low</option>
+                                    </select>
+                                </div>
+                                <button type="submit" className="btn btn-primary">
+                                    <i className="fas fa-plus"></i>
+                                    Add Task
+                                </button>
+                            </div>
+                        </form>
+
+                        <div className="filters-stats">
+                            <div className="filters">
+                                <button
+                                    className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+                                    onClick={() => setFilter('all')}
+                                >
+                                    All Tasks
+                                </button>
+                                <button
+                                    className={`filter-btn ${filter === 'active' ? 'active' : ''}`}
+                                    onClick={() => setFilter('active')}
+                                >
+                                    Active
+                                </button>
+                                <button
+                                    className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
+                                    onClick={() => setFilter('completed')}
+                                >
+                                    Completed
+                                </button>
+                                <button
+                                    className={`filter-btn ${filter === 'high' ? 'active' : ''}`}
+                                    onClick={() => setFilter('high')}
+                                >
+                                    🔴 High Priority
+                                </button>
+                                <button
+                                    className={`filter-btn ${filter === 'medium' ? 'active' : ''}`}
+                                    onClick={() => setFilter('medium')}
+                                >
+                                    🟡 Medium Priority
+                                </button>
+                                <button
+                                    className={`filter-btn ${filter === 'low' ? 'active' : ''}`}
+                                    onClick={() => setFilter('low')}
+                                >
+                                    🟢 Low Priority
+                                </button>
+                            </div>
+
+                            <div className="stats">
+                                <div className="stat-item">
+                                    <div className="stat-number">{stats.total}</div>
+                                    <div>Total</div>
+                                </div>
+                                <div className="stat-item">
+                                    <div className="stat-number">{stats.active}</div>
+                                    <div>Active</div>
+                                </div>
+                                <div className="stat-item">
+                                    <div className="stat-number">{stats.completed}</div>
+                                    <div>Done</div>
+                                </div>
+                                <div className="stat-item">
+                                    <div className="stat-number">{stats.high}</div>
+                                    <div>Urgent</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="todos-list">
+                            {filteredTodos.length === 0 ? (
+                                <div className="empty-state">
+                                    <i className="fas fa-clipboard-list"></i>
+                                    <h3>No tasks found</h3>
+                                    <p>
+                                        {todos.length === 0
+                                            ? "Add your first task above to get started!"
+                                            : "Try adjusting your filter or add a new task."
+                                        }
+                                    </p>
+                                </div>
+                            ) : (
+                                filteredTodos.map(todo => (
+                                    <div
+                                        key={todo.id}
+                                        className={`todo-item ${todo.completed ? 'completed' : ''}`}
+                                    >
+                                        <div className="todo-content">
+                                            <div className="todo-left">
+                                                <input
+                                                    type="checkbox"
+                                                    className="todo-checkbox"
+                                                    checked={todo.completed}
+                                                    onChange={() => toggleTodo(todo.id)}
+                                                />
+                                                <div
+                                                    className={`todo-text ${todo.completed ? 'completed' : ''}`}
+                                                >
+                                                    {todo.text}
+                                                </div>
+                                                <span className={`priority-badge priority-${todo.priority}`}>
+                                                    {todo.priority === 'high' && '🔴 High'}
+                                                    {todo.priority === 'medium' && '🟡 Medium'}
+                                                    {todo.priority === 'low' && '🟢 Low'}
+                                                </span>
+                                            </div>
+                                            <div className="todo-actions">
+                                                <button
+                                                    className="btn btn-danger btn-sm"
+                                                    onClick={() => deleteTodo(todo.id)}
+                                                    title="Delete task"
+                                                >
+                                                    <i className="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the app
+        ReactDOM.render(<TodoApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
