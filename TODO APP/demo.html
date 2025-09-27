@@ -391,10 +391,25 @@
         </div>
     </div>
 
-    <!-- React via CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- React via CDN with fallbacks -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script>
+        // Check if React loaded properly
+        if (typeof React === 'undefined') {
+            document.getElementById('root').innerHTML = `
+                <div style="display: flex; justify-content: center; align-items: center; height: 100vh; color: white; text-align: center; flex-direction: column;">
+                    <h2>⚠️ Loading Error</h2>
+                    <p>React libraries failed to load. This might be due to network issues.</p>
+                    <p>Please refresh the page or check your internet connection.</p>
+                    <br>
+                    <a href="../index.html" style="color: white; text-decoration: underline;">← Back to Portfolio</a>
+                </div>
+            `;
+        }
+    </script>
     
     <script type="text/babel">
         const { useState, useEffect } = React;
@@ -633,8 +648,42 @@
             );
         }
 
-        // Render the app
-        ReactDOM.render(<TodoApp />, document.getElementById('root'));
+        // Render the app with error handling
+        try {
+            if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
+                ReactDOM.render(<TodoApp />, document.getElementById('root'));
+            } else {
+                throw new Error('React libraries not loaded');
+            }
+        } catch (error) {
+            console.error('Error rendering TodoMaster:', error);
+            document.getElementById('root').innerHTML = `
+                <div style="display: flex; justify-content: center; align-items: center; height: 100vh; color: white; text-align: center; flex-direction: column; padding: 2rem;">
+                    <h2>⚠️ TodoMaster Loading Error</h2>
+                    <p>There was an issue loading the React application.</p>
+                    <p>Error: ${error.message}</p>
+                    <br>
+                    <a href="../index.html" style="color: white; text-decoration: underline; padding: 1rem; background: rgba(255,255,255,0.2); border-radius: 8px;">← Back to Portfolio</a>
+                </div>
+            `;
+        }
+
+        // Fallback timeout - if still loading after 10 seconds, show error
+        setTimeout(() => {
+            const loadingElement = document.querySelector('.loading');
+            if (loadingElement && loadingElement.parentNode.id === 'root') {
+                document.getElementById('root').innerHTML = `
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; color: white; text-align: center; flex-direction: column; padding: 2rem;">
+                        <h2>⏱️ Loading Timeout</h2>
+                        <p>TodoMaster is taking longer than expected to load.</p>
+                        <p>This might be due to slow network connection.</p>
+                        <br>
+                        <button onclick="location.reload()" style="padding: 1rem 2rem; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 1rem;">🔄 Retry</button>
+                        <a href="../index.html" style="color: white; text-decoration: underline; padding: 1rem; background: rgba(255,255,255,0.2); border-radius: 8px;">← Back to Portfolio</a>
+                    </div>
+                `;
+            }
+        }, 10000);
     </script>
 </body>
 </html>
